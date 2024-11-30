@@ -22,6 +22,7 @@ dependencies {
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.serde:micronaut-serde-processor")
     ksp("io.micronaut.openapi:micronaut-openapi")
+    implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
@@ -43,8 +44,9 @@ dependencies {
     runtimeOnly("org.yaml:snakeyaml:2.0")
 
     //OpenAPI
-    ksp("io.micronaut.openapi:micronaut-openapi")
-    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+    ksp("io.micronaut.openapi:micronaut-openapi-annotations")
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
+    implementation("io.swagger.core.v3:swagger-annotations")
 
 }
 
@@ -60,7 +62,6 @@ graalvmNative.toolchainDetection = false
 
 micronaut {
     runtime("netty")
-    testRuntime("kotest5")
     processing {
         incremental(true)
         annotations("com.event.*")
@@ -78,5 +79,6 @@ micronaut {
         replaceLogbackXml = true
     }
 }
+
 
 

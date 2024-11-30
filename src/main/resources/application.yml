@@ -3,6 +3,14 @@ micronaut:
     name: event-service
   server:
     port: 8080
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger-ui
+        mapping: /swagger-ui/**
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/events_db
@@ -24,4 +32,10 @@ jpa:
 flyway:
   datasources:
   default:
+    enabled: true
+
+swagger:
+  ui:
+    path: /swagger-ui  # You can change the Swagger UI path here
+    # Enable or disable Swagger UI (true to enable, false to disable)
     enabled: true
