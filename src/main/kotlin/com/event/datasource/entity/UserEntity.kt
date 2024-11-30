@@ -1,5 +1,6 @@
 package com.event.datasource.entity
 
+import io.micronaut.data.annotation.DateCreated
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.util.*
@@ -21,6 +22,7 @@ class UserEntity (
     @Column(name = "email", nullable = false)
     var email: String,
 
+    @DateCreated
     @Column(name="created_at", nullable = false)
     var createdAt: Date,
 

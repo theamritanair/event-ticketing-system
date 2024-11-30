@@ -17,7 +17,6 @@ import jakarta.inject.Singleton
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
-import java.time.LocalDate
 
 import java.util.*
 
@@ -54,7 +53,8 @@ class EventsController(
     override fun createEvent(
         name: String,
         description: String,
-        date: String,
+        eventStartDate: String,
+        eventEndDate: String?,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -62,17 +62,19 @@ class EventsController(
     ): HttpResponse<*> {
         logger.info("Received request to create event: $name")
         //Pre validations
-        val validationResponse = Helper.validateCreateEventRequest(date, totalTickets, availableTickets, ticketPrice, createdBy);
+        val validationResponse = Helper.validateCreateEventRequest(eventStartDate, eventEndDate,
+            totalTickets, availableTickets, ticketPrice, createdBy);
         if (validationResponse != null) {
             logger.error("Error in create event request: $validationResponse")
             return HttpResponse.badRequest(validationResponse)
         }
 
-        if (eventsService.isDuplicateEvent(name, LocalDate.parse(date))) {
-            logger.error("Duplicate event found: $name on $date")
-            return HttpResponse.badRequest("Error: Duplicate event found for the name and event date.")
+        if (eventsService.isDuplicateEvent(name, eventStartDate, eventEndDate)) {
+            logger.error("Duplicate event found: $name on $eventStartDate to $eventEndDate")
+            return HttpResponse.badRequest("Error: Duplicate event found for the name and event dates.")
         }
-        val result = eventsService.createEvent(name, description, date, totalTickets, availableTickets, ticketPrice, createdBy)
+        val result = eventsService.createEvent(name, description, eventStartDate, eventEndDate,
+            totalTickets, availableTickets, ticketPrice, createdBy)
         return if (result.isSuccess) {
             logger.info("Event created successfully!")
             HttpResponse.created(result.getOrNull())
@@ -82,10 +84,12 @@ class EventsController(
         }
     }
 
-    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "username") username: String): HttpResponse<*> {
+    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "username") username: String,
+        @QueryValue(value = "quantity") quantity: Int
+    ): HttpResponse<*> {
         logger.info("Received request to purchase ticket for event: $eventId by user: $username")
         try{
-            val result = ticketService.purchaseTicket(eventId, username)
+            val result = ticketService.purchaseTicket(eventId, username, quantity)
             if(result.isSuccess){
                 logger.info("Ticket purchased successfully!")
                 return HttpResponse.ok(result.getOrNull())

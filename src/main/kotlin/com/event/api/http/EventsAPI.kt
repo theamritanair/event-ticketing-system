@@ -51,7 +51,8 @@ interface EventsAPI {
     fun createEvent(
         @QueryValue("name") name: String,
         @QueryValue("description") description: String,
-        @QueryValue("date") date: String,
+        @QueryValue("event_start_date") eventStartDate: String,
+        @QueryValue("event_end_date") eventEndDate: String?,
         @QueryValue("total_tickets") totalTickets: Int,
         @QueryValue("available_tickets") availableTickets: Int,
         @QueryValue("ticket_price") ticketPrice: BigDecimal,
@@ -68,6 +69,7 @@ interface EventsAPI {
     fun purchaseTicket(
         eventId: UUID,
         @QueryValue("username") username: String,
+        @QueryValue("quantity") quantity: Int
     ): HttpResponse<*>
 
 

@@ -11,7 +11,8 @@ import java.time.LocalDate
 object Helper {
 
      fun validateCreateEventRequest(
-        date: String,
+        eventStartDate: String,
+        eventEndDate: String?,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -24,7 +25,8 @@ object Helper {
             return INVALID_TICKETS_ERROR
         }
         try {
-            LocalDate.parse(date)
+            LocalDate.parse(eventStartDate)
+            eventEndDate?.let { LocalDate.parse(it) }
         } catch (e: Exception) {
             return INVALID_DATE_FORMAT_ERROR
         }

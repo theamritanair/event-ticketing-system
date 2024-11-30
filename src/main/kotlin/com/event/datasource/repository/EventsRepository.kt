@@ -17,8 +17,14 @@ interface EventsRepository : CrudRepository<EventsEntity, UUID> {
         pageable: Pageable
     ): Page<EventsEntity>
 
-    fun existsByTitleAndEventDate(
+    fun existsByTitleAndEventStartDate(
         title: String,
-        eventDate: LocalDate
+        eventStartDate: LocalDate
+    ) : Boolean
+
+    fun existsByTitleAndEventStartDateAndEventEndDate(
+        title: String,
+        eventStartDate: LocalDate,
+        eventEndDate: LocalDate
     ): Boolean
 }

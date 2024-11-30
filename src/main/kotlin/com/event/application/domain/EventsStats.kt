@@ -9,5 +9,6 @@ class EventsStats(
     val eventName: String,
     val availableTickets: Int,
     val ticketsSold: Int,
-    val ticketsRevenue: BigDecimal
+    val ticketsRevenue: BigDecimal,
+    val status: String
 )

@@ -10,11 +10,13 @@ fun Events.toEventsEntity(): EventsEntity =
      EventsEntity(
         title = title,
         description = description,
-        eventDate = eventDate,
-        totalTickets = this.totalTickets,
-        availableTickets = this.availableTickets,
+        eventStartDate = eventStartDate,
+        eventEndDate = eventEndDate,
+        totalTickets = totalTickets,
+        availableTickets = availableTickets,
         ticketPrice = ticketPrice,
-        createdBy = this.createdBy
+        createdBy = createdBy,
+        status = status,
     )
 
 fun EventsEntity.toEvents(): Events =
@@ -22,11 +24,13 @@ fun EventsEntity.toEvents(): Events =
         id = id!!,
         title = title,
         description = description,
-        eventDate = eventDate,
+        eventStartDate = eventStartDate,
+        eventEndDate = eventEndDate,
         totalTickets = totalTickets,
         availableTickets = availableTickets,
         ticketPrice = ticketPrice,
-        createdBy = createdBy
+        createdBy = createdBy,
+        status = status
     )
 
 fun Ticket.toTicketEntity(): TicketEntity =
@@ -34,12 +38,15 @@ fun Ticket.toTicketEntity(): TicketEntity =
         userId = userId,
         eventId = eventId,
         transactionId = transactionId,
-        purchaseDate = purchaseDate
+        quantity = quantity,
+        totalPrice = totalPrice
     )
 fun TicketEntity.toTicket(): Ticket =
     Ticket(
         userId = userId,
         eventId = eventId,
         transactionId = transactionId,
-        purchaseDate = purchaseDate
+        quantity = quantity,
+        totalPrice = totalPrice,
+        purchaseDateTime = purchaseDateTime
     )

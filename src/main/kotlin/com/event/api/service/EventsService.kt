@@ -1,5 +1,6 @@
 package com.event.api.service
 
+import com.event.application.domain.EventStatus
 import com.event.application.domain.Events
 import com.event.application.domain.EventsStats
 import com.event.application.exception.EventNotFoundException
@@ -43,7 +44,8 @@ class EventsService(
     fun createEvent(
         name: String,
         description: String,
-        date: String,
+        eventStartDate: String,
+        eventEndDate: String?,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -53,18 +55,30 @@ class EventsService(
             id = UUID.randomUUID(),
             title = name,
             description = description,
-            eventDate = LocalDate.parse(date),
+            eventStartDate = LocalDate.parse(eventStartDate),
+            eventEndDate = eventEndDate?.let { LocalDate.parse(it) },
             totalTickets = totalTickets,
             availableTickets = availableTickets,
             ticketPrice = ticketPrice,
-            createdBy = createdBy
+            createdBy = createdBy,
+            status = EventStatus.PUBLISHED.name
         )
         val newEvent = eventsRepository.save(event.toEventsEntity())
         return Result.success(newEvent.toEvents())
     }
 
-    fun isDuplicateEvent(name: String, date: LocalDate): Boolean {
-        return eventsRepository.existsByTitleAndEventDate(name, date)
+    fun isDuplicateEvent(name: String, eventStartDate: String, eventEndDate: String?): Boolean {
+        return if (eventEndDate == null) {
+            eventsRepository.existsByTitleAndEventStartDate(name, LocalDate.parse(eventStartDate))
+        } else {
+            eventsRepository.existsByTitleAndEventStartDateAndEventEndDate(
+                name,
+                LocalDate.parse(eventStartDate),
+                LocalDate.parse(eventEndDate)
+            )
+        }
+
+
     }
 
     fun getEventsStats(eventId: UUID): EventsStats {
@@ -76,7 +90,8 @@ class EventsService(
                 eventName = event.title,
                 availableTickets = event.availableTickets,
                 ticketsSold = ticketsSold,
-                ticketsRevenue = event.ticketPrice * ticketsSold.toBigDecimal()
+                ticketsRevenue = event.ticketPrice * ticketsSold.toBigDecimal(),
+                status = event.status
             )
         }else{
             throw EventNotFoundException("Event not found for id $eventId")
