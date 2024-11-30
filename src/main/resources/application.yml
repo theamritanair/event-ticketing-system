@@ -31,8 +31,11 @@ jpa:
       show_sql: true
 flyway:
   datasources:
-  default:
-    enabled: true
+    default:
+      enabled: true
+      locations: classpath:db/migration
+      schemas: events_db
+      clean-schema: true
 
 swagger:
   ui:
