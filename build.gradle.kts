@@ -56,8 +56,6 @@ java {
     sourceCompatibility = JavaVersion.toVersion("21")
 }
 
-
-
 graalvmNative.toolchainDetection = false
 
 micronaut {
@@ -66,9 +64,6 @@ micronaut {
     processing {
         incremental(true)
         annotations("com.event.*")
-    }
-    testResources {
-        additionalModules.add("jdbc-postgresql")
     }
     aot {
         // Please review carefully the optimizations enabled below
@@ -82,11 +77,6 @@ micronaut {
         optimizeNetty = true
         replaceLogbackXml = true
     }
-}
-
-
-tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
-    jdkVersion = "21"
 }
 
 

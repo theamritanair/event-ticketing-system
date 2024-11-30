@@ -1,23 +1,24 @@
 package com.event.api
 
 import com.event.api.service.EventsService
-import com.event.application.constants.Constants.ADMIN_USERS
 import com.event.application.domain.Events
+import com.event.utility.Helper
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import jakarta.inject.Singleton
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.time.LocalDate
+
 import java.util.*
 
 @Singleton
 @Controller
 class EventsController(
-    private val eventsService: EventsService
+    private val eventsService: EventsService,
+    private val logger : Logger = LoggerFactory.getLogger(EventsController::class.java)
 ) : EventsAPI {
-
-    val logger = LoggerFactory.getLogger(EventsController::class.java)
 
     override fun getAllEvents(): HttpResponse<List<Events>>{
         val events = eventsService.getAllEvents()
@@ -26,8 +27,10 @@ class EventsController(
     }
 
     override fun getEventById(id: UUID): HttpResponse<Events> {
+        logger.info("Received request to get event by id: $id")
         val event = eventsService.getEventsByEventId(id)
         return if (event != null) {
+            logger.debug("Event found: {}", event)
             HttpResponse.ok(event)
         } else {
             HttpResponse.notFound()
@@ -48,27 +51,21 @@ class EventsController(
         ticketPrice: BigDecimal,
         createdBy: String
     ): HttpResponse<*> {
+        logger.info("Received request to create event: $name")
         //Pre validations
-        if (!ADMIN_USERS.contains(createdBy)) {
-            return HttpResponse.badRequest("Error: User is not authorized to create events.")
-        }
-        if (availableTickets > totalTickets) {
-            return HttpResponse.badRequest("Error: Available tickets cannot exceed total tickets.")
-        }
-        //Date should be parseable
-        try {
-            LocalDate.parse(date)
-        } catch (e: Exception) {
-            return HttpResponse.badRequest("Error: Invalid date format. Please use yyyy-MM-dd")
-        }
-        //Validate ticket price
-        if (ticketPrice <= BigDecimal.ZERO) {
-            return HttpResponse.badRequest("Error: Ticket price should be greater than zero.")
+        val validationResponse = Helper.validateCreateEventRequest(date, totalTickets, availableTickets, ticketPrice, createdBy);
+        if (validationResponse != null) {
+            logger.error("Error in create event request: $validationResponse")
+            return HttpResponse.badRequest(validationResponse)
         }
 
+        if (eventsService.isDuplicateEvent(name, LocalDate.parse(date))) {
+            logger.error("Duplicate event found: $name on $date")
+            return HttpResponse.badRequest("Error: Duplicate event found for the name and event date.")
+        }
         val result = eventsService.createEvent(name, description, date, totalTickets, availableTickets, ticketPrice, createdBy)
         return if (result.isSuccess) {
-            logger.info("Event created successfully.")
+            logger.info("Event created successfully!")
             HttpResponse.created(result.getOrNull())
         } else {
             logger.error("Error creating event: ${result.exceptionOrNull()?.message}")

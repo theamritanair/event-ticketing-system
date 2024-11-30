@@ -61,4 +61,8 @@ class EventsService(
         return Result.success(newEvent.toEvents())
     }
 
+    fun isDuplicateEvent(name: String, date: LocalDate): Boolean {
+        return eventsRepository.existsByTitleAndEventDate(name, date)
+    }
+
 }
