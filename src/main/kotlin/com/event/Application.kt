@@ -5,7 +5,11 @@ object Application {
 
 	@JvmStatic
 	fun main(args: Array<String>) {
-		Micronaut.run(Application.javaClass)
+
+		Micronaut.build()
+			.packages("com.event")
+			.mainClass(Application.javaClass)
+			.start()
 	}
 }
 

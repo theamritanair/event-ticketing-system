@@ -6,6 +6,7 @@ plugins {
     id("io.micronaut.application") version "4.4.4"
     id("io.micronaut.test-resources") version "4.4.4"
     id("io.micronaut.aot") version "4.4.4"
+    kotlin("plugin.jpa") version "1.9.25"
 }
 
 version = "0.1"
@@ -17,6 +18,7 @@ repositories {
 }
 
 dependencies {
+
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.serde:micronaut-serde-processor")
     ksp("io.micronaut.openapi:micronaut-openapi")
@@ -28,17 +30,32 @@ dependencies {
     compileOnly("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-    runtimeOnly("org.postgresql:postgresql")
     testImplementation("io.micronaut:micronaut-http-client")
+
+    //Flyway migrations
+    implementation("io.micronaut.flyway:micronaut-flyway")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+
+    //JPA
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.yaml:snakeyaml:2.0")
+
+    //OpenAPI
+    ksp("io.micronaut.openapi:micronaut-openapi")
+    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+
 }
 
 
 application {
-    mainClass = "com.event.ApplicationKt"
+    mainClass = "com.event.Application"
 }
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
 }
+
 
 
 graalvmNative.toolchainDetection = false

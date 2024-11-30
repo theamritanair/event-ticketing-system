@@ -1,5 +1,27 @@
+micronaut:
+  application:
+    name: event-service
+  server:
+    port: 8080
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/events_db
     username: postgres
     password: postgres
+    dialect: POSTGRES
+    driver-class-name: org.postgresql.Driver
+    schema: events_db
+
+jpa:
+  default:
+    entity-scan:
+      packages: 'com.event.datasource.entity'
+  properties:
+    hibernate:
+      hbm2ddl:
+        auto: update
+      show_sql: true
+flyway:
+  datasources:
+  default:
+    enabled: true
