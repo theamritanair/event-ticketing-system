@@ -1,4 +1,4 @@
-package com.event.api
+package com.event.api.http
 
 import com.event.application.domain.Events
 import io.micronaut.http.HttpResponse
@@ -55,6 +55,18 @@ interface EventsAPI {
         @QueryValue("available_tickets") availableTickets: Int,
         @QueryValue("ticket_price") ticketPrice: BigDecimal,
         @QueryValue("created_by") createdBy: String
+    ): HttpResponse<*>
+
+    @Operation(
+        summary = "Create an event",
+        description = "Create an event",
+        tags = ["events"]
+    )
+    @ApiResponse(responseCode = "201", description = "Event created")
+    @Post(value = "/events/{eventId}/purchase", produces = ["application/json"])
+    fun purchaseTicket(
+        eventId: UUID,
+        @QueryValue("userId") userId: String,
     ): HttpResponse<*>
 
 

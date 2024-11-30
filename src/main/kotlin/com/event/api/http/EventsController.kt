@@ -1,10 +1,14 @@
-package com.event.api
+package com.event.api.http
 
 import com.event.api.service.EventsService
+import com.event.api.service.TicketService
 import com.event.application.domain.Events
+import com.event.application.exception.EventNotFoundException
+import com.event.application.exception.TicketSoldOutException
 import com.event.utility.Helper
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.QueryValue
 import jakarta.inject.Singleton
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,6 +21,7 @@ import java.util.*
 @Controller
 class EventsController(
     private val eventsService: EventsService,
+    private val ticketService: TicketService,
     private val logger : Logger = LoggerFactory.getLogger(EventsController::class.java)
 ) : EventsAPI {
 
@@ -70,6 +75,24 @@ class EventsController(
         } else {
             logger.error("Error creating event: ${result.exceptionOrNull()?.message}")
             HttpResponse.serverError("Error creating event.")
+        }
+    }
+
+    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "user_id") userId: String): HttpResponse<*> {
+        logger.info("Received request to purchase ticket for event: $eventId by user: $userId")
+        try{
+            val result = ticketService.purchaseTicket(eventId, userId)
+            if(result.isSuccess){
+                logger.info("Ticket purchased successfully!")
+                return HttpResponse.ok(result.getOrNull())
+            }else{
+                logger.error("Error purchasing ticket: ${result.exceptionOrNull()?.message}")
+                return HttpResponse.serverError("Error purchasing ticket.")
+            }
+        }catch(ticketSoldOutException: TicketSoldOutException){
+            return HttpResponse.badRequest(ticketSoldOutException.message)
+        }catch (eventNotFoundException: EventNotFoundException){
+            return HttpResponse.notFound(eventNotFoundException.message)
         }
     }
 

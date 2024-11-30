@@ -1,7 +1,9 @@
 package com.event.datasource.mapper
 
 import com.event.application.domain.Events
+import com.event.application.domain.Ticket
 import com.event.datasource.entity.EventsEntity
+import com.event.datasource.entity.TicketEntity
 
 
 fun Events.toEventsEntity(): EventsEntity =
@@ -25,4 +27,12 @@ fun EventsEntity.toEvents(): Events =
         availableTickets = availableTickets,
         ticketPrice = ticketPrice,
         createdBy = createdBy
+    )
+
+fun Ticket.toTicketEntity(): TicketEntity =
+    TicketEntity(
+        userId = userId,
+        eventId = eventId,
+        transactionId = transactionId,
+        purchaseDate = purchaseDate
     )

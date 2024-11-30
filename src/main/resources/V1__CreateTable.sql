@@ -10,3 +10,12 @@ CREATE TABLE IF NOT EXISTS events_db.events(
     created_by UUID NOT NULL,
     CONSTRAINT fk_created_by FOREIGN KEY (created_by) REFERENCES users(id)
 )
+
+CREATE TABLE IF NOT EXISTS events_db.tickets(
+    transaction_id uuid NOT NULL,
+    event_id uuid NOT NULL,
+    user_id varchar(5) NOT NULL,
+    purchase_date DATE NOT NULL,
+    CONSTRAINT fk_event_id FOREIGN KEY (event_id) REFERENCES events(id),
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id)
+)
