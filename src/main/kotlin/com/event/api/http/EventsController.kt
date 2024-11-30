@@ -17,18 +17,16 @@ import jakarta.inject.Singleton
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
-
-import java.util.*
+import java.util.UUID
 
 @Singleton
 @Controller
 class EventsController(
     private val eventsService: EventsService,
     private val ticketService: TicketService,
-    private val logger : Logger = LoggerFactory.getLogger(EventsController::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(EventsController::class.java),
 ) : EventsAPI {
-
-    override fun getAllEvents(): HttpResponse<List<Events>>{
+    override fun getAllEvents(): HttpResponse<List<Events>>  {
         val events = eventsService.getAllEvents()
         logger.info("Total events found: ${events.size}")
         return HttpResponse.ok(events)
@@ -45,7 +43,10 @@ class EventsController(
         }
     }
 
-    override fun getEventsByName(name: String, page: Int): HttpResponse<List<Events>> {
+    override fun getEventsByName(
+        name: String,
+        page: Int,
+    ): HttpResponse<List<Events>> {
         val events = eventsService.searchEventsByName(name, page)
         return HttpResponse.ok(events.content)
     }
@@ -58,12 +59,19 @@ class EventsController(
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
-        createdBy: String
+        createdBy: String,
     ): HttpResponse<*> {
         logger.info("Received request to create event: $name")
-        //Pre validations
-        val validationResponse = Helper.validateCreateEventRequest(eventStartDate, eventEndDate,
-            totalTickets, availableTickets, ticketPrice, createdBy);
+        // Pre validations
+        val validationResponse =
+            Helper.validateCreateEventRequest(
+                eventStartDate,
+                eventEndDate,
+                totalTickets,
+                availableTickets,
+                ticketPrice,
+                createdBy,
+            )
         if (validationResponse != null) {
             logger.error("Error in create event request: $validationResponse")
             return HttpResponse.badRequest(validationResponse)
@@ -73,8 +81,17 @@ class EventsController(
             logger.error("Duplicate event found: $name on $eventStartDate to $eventEndDate")
             return HttpResponse.badRequest("Error: Duplicate event found for the name and event dates.")
         }
-        val result = eventsService.createEvent(name, description, eventStartDate, eventEndDate,
-            totalTickets, availableTickets, ticketPrice, createdBy)
+        val result =
+            eventsService.createEvent(
+                name,
+                description,
+                eventStartDate,
+                eventEndDate,
+                totalTickets,
+                availableTickets,
+                ticketPrice,
+                createdBy,
+            )
         return if (result.isSuccess) {
             logger.info("Event created successfully!")
             HttpResponse.created(result.getOrNull())
@@ -84,26 +101,29 @@ class EventsController(
         }
     }
 
-    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "username") username: String,
-        @QueryValue(value = "quantity") quantity: Int
+    override fun purchaseTicket(
+        eventId: UUID,
+        @QueryValue(value = "username") username: String,
+        @QueryValue(value = "quantity") quantity: Int,
     ): HttpResponse<*> {
         logger.info("Received request to purchase ticket for event: $eventId by user: $username")
-        try{
+        try {
             val result = ticketService.purchaseTicket(eventId, username, quantity)
-            if(result.isSuccess){
-                logger.info("Ticket purchased successfully!")
-                return HttpResponse.ok(result.getOrNull())
-            }else{
+            if (result.isSuccess)
+                {
+                    logger.info("Ticket purchased successfully!")
+                    return HttpResponse.ok(result.getOrNull())
+                } else {
                 logger.error("Error purchasing ticket: ${result.exceptionOrNull()?.message}")
                 return HttpResponse.serverError("Error purchasing ticket.")
             }
-        }catch(ticketSoldOutException: TicketSoldOutException){
+        } catch (ticketSoldOutException: TicketSoldOutException) {
             return HttpResponse.badRequest(ticketSoldOutException.message)
-        }catch (eventNotFoundException: EventNotFoundException){
+        } catch (eventNotFoundException: EventNotFoundException) {
             return HttpResponse.notFound(eventNotFoundException.message)
-        }catch(insufficientWalletBalance: InsufficientWalletBalance){
+        } catch (insufficientWalletBalance: InsufficientWalletBalance) {
             return HttpResponse.badRequest(insufficientWalletBalance.message)
-        }catch (userNotFoundException: UserNotFoundException){
+        } catch (userNotFoundException: UserNotFoundException) {
             return HttpResponse.notFound(userNotFoundException.message)
         }
     }
@@ -119,5 +139,4 @@ class EventsController(
         val eventStats = eventsService.getEventsStats(eventId)
         return HttpResponse.ok(eventStats)
     }
-
 }

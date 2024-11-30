@@ -10,21 +10,19 @@ import java.util.UUID
 
 @Repository
 interface EventsRepository : CrudRepository<EventsEntity, UUID> {
-
-
     fun findByTitleContainingIgnoreCase(
         title: String,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<EventsEntity>
 
     fun existsByTitleAndEventStartDate(
         title: String,
-        eventStartDate: LocalDate
-    ) : Boolean
+        eventStartDate: LocalDate,
+    ): Boolean
 
     fun existsByTitleAndEventStartDateAndEventEndDate(
         title: String,
         eventStartDate: LocalDate,
-        eventEndDate: LocalDate
+        eventEndDate: LocalDate,
     ): Boolean
 }

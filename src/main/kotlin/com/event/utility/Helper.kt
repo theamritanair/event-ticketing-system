@@ -9,14 +9,13 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 object Helper {
-
-     fun validateCreateEventRequest(
+    fun validateCreateEventRequest(
         eventStartDate: String,
         eventEndDate: String?,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
-        createdBy: String
+        createdBy: String,
     ): String? {
         if (!ADMIN_USERS.contains(createdBy)) {
             return UNAUTHORIZED_USER_ERROR

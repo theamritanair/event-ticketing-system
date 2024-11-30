@@ -5,9 +5,8 @@ import com.event.application.domain.Ticket
 import com.event.datasource.entity.EventsEntity
 import com.event.datasource.entity.TicketEntity
 
-
 fun Events.toEventsEntity(): EventsEntity =
-     EventsEntity(
+    EventsEntity(
         title = title,
         description = description,
         eventStartDate = eventStartDate,
@@ -30,7 +29,7 @@ fun EventsEntity.toEvents(): Events =
         availableTickets = availableTickets,
         ticketPrice = ticketPrice,
         createdBy = createdBy,
-        status = status
+        status = status,
     )
 
 fun Ticket.toTicketEntity(): TicketEntity =
@@ -39,8 +38,9 @@ fun Ticket.toTicketEntity(): TicketEntity =
         eventId = eventId,
         transactionId = transactionId,
         quantity = quantity,
-        totalPrice = totalPrice
+        totalPrice = totalPrice,
     )
+
 fun TicketEntity.toTicket(): Ticket =
     Ticket(
         userId = userId,
@@ -48,5 +48,5 @@ fun TicketEntity.toTicket(): Ticket =
         transactionId = transactionId,
         quantity = quantity,
         totalPrice = totalPrice,
-        purchaseDateTime = purchaseDateTime
+        purchaseDateTime = purchaseDateTime,
     )

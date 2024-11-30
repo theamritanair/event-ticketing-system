@@ -16,4 +16,4 @@ docker-compose -f docker-compose.yml up -d
 ./gradlew run
 ```
 3. The application will be running on `http://localhost:8080`
-4. You can access the Swagger UI at `http://localhost:8080/swagger-ui`
+

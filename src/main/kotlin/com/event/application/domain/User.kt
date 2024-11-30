@@ -9,5 +9,5 @@ data class User(
     val name: String,
     val email: String,
     val createdAt: String,
-    val walletBalance: String
+    val walletBalance: String,
 )

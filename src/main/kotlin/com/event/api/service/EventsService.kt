@@ -16,13 +16,12 @@ import java.util.UUID
 
 @Singleton
 class EventsService(
-    private var eventsRepository: EventsRepository
+    private var eventsRepository: EventsRepository,
 ) {
-
-     fun getAllEvents()  : List<Events>{
+    fun getAllEvents(): List<Events>  {
         val result = eventsRepository.findAll().map { it.toEvents() }
-        return result;
-     }
+        return result
+    }
 
     fun getEventsByEventId(id: UUID): Events? {
         val event = eventsRepository.findById(id).orElse(null)?.toEvents()
@@ -32,13 +31,13 @@ class EventsService(
     fun searchEventsByName(
         name: String,
         page: Int = 0,
-        size: Int = 10
+        size: Int = 10,
     ): Page<Events> {
         val pageable = Pageable.from(page, size)
         return eventsRepository.findByTitleContainingIgnoreCase(
             name,
-            pageable
-        ).map{ it.toEvents() }
+            pageable,
+        ).map { it.toEvents() }
     }
 
     fun createEvent(
@@ -49,36 +48,39 @@ class EventsService(
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
-        createdBy: String
+        createdBy: String,
     ): Result<Events> {
-        val event = Events(
-            id = UUID.randomUUID(),
-            title = name,
-            description = description,
-            eventStartDate = LocalDate.parse(eventStartDate),
-            eventEndDate = eventEndDate?.let { LocalDate.parse(it) },
-            totalTickets = totalTickets,
-            availableTickets = availableTickets,
-            ticketPrice = ticketPrice,
-            createdBy = createdBy,
-            status = EventStatus.PUBLISHED.name
-        )
+        val event =
+            Events(
+                id = UUID.randomUUID(),
+                title = name,
+                description = description,
+                eventStartDate = LocalDate.parse(eventStartDate),
+                eventEndDate = eventEndDate?.let { LocalDate.parse(it) },
+                totalTickets = totalTickets,
+                availableTickets = availableTickets,
+                ticketPrice = ticketPrice,
+                createdBy = createdBy,
+                status = EventStatus.PUBLISHED.name,
+            )
         val newEvent = eventsRepository.save(event.toEventsEntity())
         return Result.success(newEvent.toEvents())
     }
 
-    fun isDuplicateEvent(name: String, eventStartDate: String, eventEndDate: String?): Boolean {
+    fun isDuplicateEvent(
+        name: String,
+        eventStartDate: String,
+        eventEndDate: String?,
+    ): Boolean {
         return if (eventEndDate == null) {
             eventsRepository.existsByTitleAndEventStartDate(name, LocalDate.parse(eventStartDate))
         } else {
             eventsRepository.existsByTitleAndEventStartDateAndEventEndDate(
                 name,
                 LocalDate.parse(eventStartDate),
-                LocalDate.parse(eventEndDate)
+                LocalDate.parse(eventEndDate),
             )
         }
-
-
     }
 
     fun getEventsStats(eventId: UUID): EventsStats {
@@ -91,11 +93,10 @@ class EventsService(
                 availableTickets = event.availableTickets,
                 ticketsSold = ticketsSold,
                 ticketsRevenue = event.ticketPrice * ticketsSold.toBigDecimal(),
-                status = event.status
+                status = event.status,
             )
-        }else{
+        } else {
             throw EventNotFoundException("Event not found for id $eventId")
         }
     }
-
 }
