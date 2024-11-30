@@ -1,6 +1,7 @@
 package com.event.api.http
 
 import com.event.application.domain.Events
+import com.event.application.domain.Ticket
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
@@ -66,8 +67,26 @@ interface EventsAPI {
     @Post(value = "/events/{eventId}/purchase", produces = ["application/json"])
     fun purchaseTicket(
         eventId: UUID,
-        @QueryValue("userId") userId: String,
+        @QueryValue("username") username: String,
     ): HttpResponse<*>
 
+
+    @Operation(
+        summary = "Get all tickets for an event",
+        description = "Get all tickets for an event",
+        tags = ["events"]
+    )
+    @ApiResponse(responseCode = "200", description = "Successful operation")
+    @Get(value = "/events/{eventId}/tickets", produces = ["application/json"])
+    fun getTicketsByEventId(eventId: UUID): HttpResponse<List<Ticket>>
+
+    @Operation(
+        summary = "Get event stats",
+        description = "Get event stats",
+        tags = ["events"]
+    )
+    @ApiResponse(responseCode = "200", description = "Successful operation")
+    @Get(value = "/events/{eventId}/stats", produces = ["application/json"])
+    fun getEventsStats(eventId: UUID): HttpResponse<*>
 
 }

@@ -19,3 +19,11 @@ CREATE TABLE IF NOT EXISTS events_db.tickets(
     CONSTRAINT fk_event_id FOREIGN KEY (event_id) REFERENCES events(id),
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 )
+
+CREATE TABLE IF NOT EXISTS events_db.users(
+    id uuid NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at DATE NOT NULL
+    wallet DECIMAL(10, 2) NOT NULL
+)

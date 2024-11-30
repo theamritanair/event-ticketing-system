@@ -1,6 +1,8 @@
 package com.event.api.service
 
 import com.event.application.domain.Events
+import com.event.application.domain.EventsStats
+import com.event.application.exception.EventNotFoundException
 import com.event.datasource.mapper.toEvents
 import com.event.datasource.mapper.toEventsEntity
 import com.event.datasource.repository.EventsRepository
@@ -63,6 +65,22 @@ class EventsService(
 
     fun isDuplicateEvent(name: String, date: LocalDate): Boolean {
         return eventsRepository.existsByTitleAndEventDate(name, date)
+    }
+
+    fun getEventsStats(eventId: UUID): EventsStats {
+        val event = eventsRepository.findById(eventId).orElse(null)?.toEvents()
+        if (event != null) {
+            val ticketsSold = event.totalTickets - event.availableTickets
+            return EventsStats(
+                eventId = event.id,
+                eventName = event.title,
+                availableTickets = event.availableTickets,
+                ticketsSold = ticketsSold,
+                ticketsRevenue = event.ticketPrice * ticketsSold.toBigDecimal()
+            )
+        }else{
+            throw EventNotFoundException("Event not found for id $eventId")
+        }
     }
 
 }

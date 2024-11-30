@@ -3,8 +3,12 @@ package com.event.api.http
 import com.event.api.service.EventsService
 import com.event.api.service.TicketService
 import com.event.application.domain.Events
+import com.event.application.domain.EventsStats
+import com.event.application.domain.Ticket
 import com.event.application.exception.EventNotFoundException
+import com.event.application.exception.InsufficientWalletBalance
 import com.event.application.exception.TicketSoldOutException
+import com.event.application.exception.UserNotFoundException
 import com.event.utility.Helper
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
@@ -78,10 +82,10 @@ class EventsController(
         }
     }
 
-    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "user_id") userId: String): HttpResponse<*> {
-        logger.info("Received request to purchase ticket for event: $eventId by user: $userId")
+    override fun purchaseTicket(eventId: UUID, @QueryValue(value = "username") username: String): HttpResponse<*> {
+        logger.info("Received request to purchase ticket for event: $eventId by user: $username")
         try{
-            val result = ticketService.purchaseTicket(eventId, userId)
+            val result = ticketService.purchaseTicket(eventId, username)
             if(result.isSuccess){
                 logger.info("Ticket purchased successfully!")
                 return HttpResponse.ok(result.getOrNull())
@@ -93,7 +97,23 @@ class EventsController(
             return HttpResponse.badRequest(ticketSoldOutException.message)
         }catch (eventNotFoundException: EventNotFoundException){
             return HttpResponse.notFound(eventNotFoundException.message)
+        }catch(insufficientWalletBalance: InsufficientWalletBalance){
+            return HttpResponse.badRequest(insufficientWalletBalance.message)
+        }catch (userNotFoundException: UserNotFoundException){
+            return HttpResponse.notFound(userNotFoundException.message)
         }
+    }
+
+    override fun getTicketsByEventId(eventId: UUID): HttpResponse<List<Ticket>> {
+        logger.info("Received request to get tickets for event: $eventId")
+        val tickets = ticketService.getTicketsByEventId(eventId)
+        return HttpResponse.ok(tickets)
+    }
+
+    override fun getEventsStats(eventId: UUID): HttpResponse<EventsStats> {
+        logger.info("Received request to get stats for event: $eventId")
+        val eventStats = eventsService.getEventsStats(eventId)
+        return HttpResponse.ok(eventStats)
     }
 
 }

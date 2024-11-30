@@ -36,3 +36,10 @@ fun Ticket.toTicketEntity(): TicketEntity =
         transactionId = transactionId,
         purchaseDate = purchaseDate
     )
+fun TicketEntity.toTicket(): Ticket =
+    Ticket(
+        userId = userId,
+        eventId = eventId,
+        transactionId = transactionId,
+        purchaseDate = purchaseDate
+    )
