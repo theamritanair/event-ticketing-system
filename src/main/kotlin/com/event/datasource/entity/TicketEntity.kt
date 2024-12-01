@@ -18,7 +18,7 @@ class TicketEntity(
     @Column(name = "event_id")
     var eventId: UUID,
     @Column(name = "user_id")
-    var userId: String,
+    var userId: Long,
     @DateCreated
     @Column(name = "purchase_date_time")
     var purchaseDateTime: LocalDateTime = LocalDateTime.now(),

@@ -50,6 +50,7 @@ class EventsController(
         name: String,
         page: Int,
     ): HttpResponse<List<Events>> {
+        logger.info("Received request to search events by name: $name")
         val events = eventsService.searchEventsByName(name, page)
         return HttpResponse.ok(events.content)
     }
@@ -132,6 +133,7 @@ class EventsController(
         @QueryValue(value = "username") username: String,
         @QueryValue(value = "quantity") quantity: Int,
     ): HttpResponse<*> {
+        logger.info("Validating purchase ticket request for event: $eventId by user: $username")
         // Pre validations
         val validationResponse = Helper.validatePurchaseTicketRequest(quantity)
         if (validationResponse != null) {
@@ -143,7 +145,7 @@ class EventsController(
         }
 
         logger.info(
-            "Received request to purchase ticket for event: $eventId by user: $username" +
+            "Valid request received to purchase ticket for event: $eventId by user: $username" +
                 " for quantity: $quantity",
         )
         try {

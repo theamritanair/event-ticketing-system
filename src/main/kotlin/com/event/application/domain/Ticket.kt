@@ -9,7 +9,7 @@ import java.util.UUID
 data class Ticket(
     val transactionId: UUID,
     val eventId: UUID,
-    val userId: String,
+    val userId: Long,
     val quantity: Int,
     val totalPrice: BigDecimal,
     val purchaseDateTime: LocalDateTime,
