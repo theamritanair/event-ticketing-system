@@ -43,8 +43,7 @@ class EventsService(
     fun createEvent(
         name: String,
         description: String,
-        eventStartDate: String,
-        eventEndDate: String?,
+        eventDate: String,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -55,8 +54,7 @@ class EventsService(
                 id = UUID.randomUUID(),
                 title = name,
                 description = description,
-                eventStartDate = LocalDate.parse(eventStartDate),
-                eventEndDate = eventEndDate?.let { LocalDate.parse(it) },
+                eventDate = LocalDate.parse(eventDate),
                 totalTickets = totalTickets,
                 availableTickets = availableTickets,
                 ticketPrice = ticketPrice,
@@ -69,18 +67,9 @@ class EventsService(
 
     fun isDuplicateEvent(
         name: String,
-        eventStartDate: String,
-        eventEndDate: String?,
+        eventDate: String,
     ): Boolean {
-        return if (eventEndDate == null) {
-            eventsRepository.existsByTitleAndEventStartDate(name, LocalDate.parse(eventStartDate))
-        } else {
-            eventsRepository.existsByTitleAndEventStartDateAndEventEndDate(
-                name,
-                LocalDate.parse(eventStartDate),
-                LocalDate.parse(eventEndDate),
-            )
-        }
+        return eventsRepository.existsByTitleAndEventDate(name, LocalDate.parse(eventDate))
     }
 
     fun getEventsStats(eventId: UUID): EventsStats {
@@ -98,5 +87,10 @@ class EventsService(
         } else {
             throw EventNotFoundException("Event not found for id $eventId")
         }
+    }
+
+    fun getEventsByDate(date: String): Events {
+        val event = eventsRepository.findByEventDate(LocalDate.parse(date))?.toEvents()
+        return event ?: throw EventNotFoundException("Event not found for date $date")
     }
 }

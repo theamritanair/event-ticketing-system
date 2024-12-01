@@ -4,7 +4,6 @@ import com.event.api.service.EventsService
 import com.event.api.service.TicketService
 import com.event.application.domain.Events
 import com.event.application.domain.EventsStats
-import com.event.application.domain.Ticket
 import com.event.application.exception.EventNotFoundException
 import com.event.application.exception.InsufficientWalletBalance
 import com.event.application.exception.TicketSoldOutException
@@ -42,7 +41,6 @@ class EventsController(
             HttpResponse.notFound()
         }
     }
-
     override fun getEventsByName(
         name: String,
         page: Int,
@@ -54,8 +52,7 @@ class EventsController(
     override fun createEvent(
         name: String,
         description: String,
-        eventStartDate: String,
-        eventEndDate: String?,
+        eventDate: String,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -65,8 +62,7 @@ class EventsController(
         // Pre validations
         val validationResponse =
             Helper.validateCreateEventRequest(
-                eventStartDate,
-                eventEndDate,
+                eventDate,
                 totalTickets,
                 availableTickets,
                 ticketPrice,
@@ -77,16 +73,15 @@ class EventsController(
             return HttpResponse.badRequest(validationResponse)
         }
 
-        if (eventsService.isDuplicateEvent(name, eventStartDate, eventEndDate)) {
-            logger.error("Duplicate event found: $name on $eventStartDate to $eventEndDate")
+        if (eventsService.isDuplicateEvent(name, eventDate)) {
+            logger.error("Duplicate event found: $name on $eventDate")
             return HttpResponse.badRequest("Error: Duplicate event found for the name and event dates.")
         }
         val result =
             eventsService.createEvent(
                 name,
                 description,
-                eventStartDate,
-                eventEndDate,
+                eventDate,
                 totalTickets,
                 availableTickets,
                 ticketPrice,
@@ -132,10 +127,19 @@ class EventsController(
         }
     }
 
-    override fun getTicketsByEventId(eventId: UUID): HttpResponse<List<Ticket>> {
-        logger.info("Received request to get tickets for event: $eventId")
-        val tickets = ticketService.getTicketsByEventId(eventId)
-        return HttpResponse.ok(tickets)
+    override fun getTicketsByEventId(
+        eventId: UUID,
+        @QueryValue(value = "username") username: String,
+    ): HttpResponse<*> {
+        logger.info("Received request to get tickets for event: $eventId by user: $username")
+        try {
+            val tickets = ticketService.getTicketsByEventId(eventId, username)
+            return HttpResponse.ok(tickets)
+        } catch (userNotFoundException: UserNotFoundException) {
+            return HttpResponse.notFound(userNotFoundException.message)
+        } catch (eventNotFoundException: EventNotFoundException) {
+            return HttpResponse.notFound(eventNotFoundException.message)
+        }
     }
 
     override fun getEventsStats(eventId: UUID): HttpResponse<EventsStats> {

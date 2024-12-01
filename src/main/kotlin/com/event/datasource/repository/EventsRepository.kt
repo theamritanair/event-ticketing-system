@@ -15,14 +15,10 @@ interface EventsRepository : JpaRepository<EventsEntity, UUID> {
         pageable: Pageable,
     ): Page<EventsEntity>
 
-    fun existsByTitleAndEventStartDate(
+    fun existsByTitleAndEventDate(
         title: String,
-        eventStartDate: LocalDate,
+        eventDate: LocalDate,
     ): Boolean
 
-    fun existsByTitleAndEventStartDateAndEventEndDate(
-        title: String,
-        eventStartDate: LocalDate,
-        eventEndDate: LocalDate,
-    ): Boolean
+    fun findByEventDate(eventDate: LocalDate): EventsEntity?
 }

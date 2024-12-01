@@ -10,7 +10,7 @@ data class Events(
     val id: UUID,
     var title: String,
     var description: String? = null,
-    var eventStartDate: LocalDate,
+    var eventDate: LocalDate,
     var eventEndDate: LocalDate? = null,
     var totalTickets: Int,
     var availableTickets: Int,

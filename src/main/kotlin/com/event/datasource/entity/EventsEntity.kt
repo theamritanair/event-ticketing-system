@@ -24,10 +24,8 @@ data class EventsEntity(
     var title: String,
     @Column(name = "description", nullable = true)
     var description: String? = null,
-    @Column(name = "event_start_date", nullable = false)
-    var eventStartDate: LocalDate,
-    @Column(name = "event_end_date", nullable = true)
-    var eventEndDate: LocalDate? = null,
+    @Column(name = "event_date", nullable = false)
+    var eventDate: LocalDate,
     @Column(name = "total_tickets", nullable = false)
     var totalTickets: Int,
     @Column(name = "available_tickets", nullable = false)

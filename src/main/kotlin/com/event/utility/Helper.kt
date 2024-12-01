@@ -10,8 +10,7 @@ import java.time.LocalDate
 
 object Helper {
     fun validateCreateEventRequest(
-        eventStartDate: String,
-        eventEndDate: String?,
+        eventDate: String,
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
@@ -23,15 +22,28 @@ object Helper {
         if (availableTickets > totalTickets) {
             return INVALID_TICKETS_ERROR
         }
-        try {
-            LocalDate.parse(eventStartDate)
-            eventEndDate?.let { LocalDate.parse(it) }
-        } catch (e: Exception) {
+        if (!validateEventDate(eventDate)) {
             return INVALID_DATE_FORMAT_ERROR
         }
         if (ticketPrice <= BigDecimal.ZERO) {
             return INVALID_TICKET_PRICE_ERROR
         }
         return null
+    }
+
+    fun validatePurchaseTicketRequest(quantity: Int): String? {
+        if (quantity <= 0) {
+            return INVALID_TICKETS_ERROR
+        }
+        return null
+    }
+
+    fun validateEventDate(date: String): Boolean {
+        return try {
+            LocalDate.parse(date)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

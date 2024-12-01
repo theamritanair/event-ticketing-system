@@ -1,7 +1,6 @@
 package com.event.api.http
 
 import com.event.application.domain.Events
-import com.event.application.domain.Ticket
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
@@ -52,8 +51,7 @@ interface EventsAPI {
     fun createEvent(
         @QueryValue("name") name: String,
         @QueryValue("description") description: String,
-        @QueryValue("event_start_date") eventStartDate: String,
-        @QueryValue("event_end_date") eventEndDate: String?,
+        @QueryValue("event_date") eventDate: String,
         @QueryValue("total_tickets") totalTickets: Int,
         @QueryValue("available_tickets") availableTickets: Int,
         @QueryValue("ticket_price") ticketPrice: BigDecimal,
@@ -80,7 +78,10 @@ interface EventsAPI {
     )
     @ApiResponse(responseCode = "200", description = "Successful operation")
     @Get(value = "/events/{eventId}/tickets", produces = ["application/json"])
-    fun getTicketsByEventId(eventId: UUID): HttpResponse<List<Ticket>>
+    fun getTicketsByEventId(
+        eventId: UUID,
+        @QueryValue("username") username: String,
+    ): HttpResponse<*>
 
     @Operation(
         summary = "Get event stats",
