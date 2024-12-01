@@ -1,2 +1,1 @@
-rootProject.name="event-ticketing-system"
-
+rootProject.name = "event-ticketing-system"

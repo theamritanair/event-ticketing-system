@@ -1,5 +1,44 @@
+micronaut:
+  application:
+    name: event-service
+  server:
+    port: 8080
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger-ui
+        mapping: /swagger-ui/**
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/events_db
     username: postgres
     password: postgres
+    dialect: POSTGRES
+    driver-class-name: org.postgresql.Driver
+    schema: events_db
+
+jpa:
+  default:
+    entity-scan:
+      packages: 'com.event.datasource.entity'
+  properties:
+    hibernate:
+      hbm2ddl:
+        auto: update
+      show_sql: true
+flyway:
+  datasources:
+    default:
+      enabled: true
+      locations: classpath:db/migration
+      schemas: events_db
+      clean-schema: true
+
+swagger:
+  ui:
+    path: /swagger-ui  # You can change the Swagger UI path here
+    # Enable or disable Swagger UI (true to enable, false to disable)
+    enabled: true
