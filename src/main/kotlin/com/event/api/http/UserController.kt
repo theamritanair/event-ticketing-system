@@ -23,10 +23,9 @@ class UserController(
     ): HttpResponse<User> {
         logger.info("Received request to create user with username: $username")
         val user = userService.createUser(name, email, username, wallet)
-        return if (user.isSuccess)
-            {
-                HttpResponse.created(user.getOrNull())
-            } else {
+        return if (user.isSuccess) {
+            HttpResponse.created(user.getOrNull())
+        } else {
             HttpResponse.badRequest()
         }
     }

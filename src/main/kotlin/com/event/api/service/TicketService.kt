@@ -46,7 +46,7 @@ open class TicketService(
         // Lock the event to handle race conditions
         entityManager.lock(event, jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
 
-        if (event.availableTickets <= 0) {
+        if (event.availableTickets <= 0 || event.status == EventStatus.SOLD_OUT.name) {
             throw TicketSoldOutException("Tickets are sold out for event $eventId")
         }
         if (user.walletBalance < event.ticketPrice) {
