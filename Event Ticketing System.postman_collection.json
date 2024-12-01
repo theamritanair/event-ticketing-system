@@ -1,0 +1,364 @@
+{
+	"info": {
+		"_postman_id": "08802c25-8995-42ca-93ea-62210a8412a0",
+		"name": "Event Ticketing System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15334425"
+	},
+	"item": [
+		{
+			"name": "Concurrent purchases example",
+			"item": [
+				{
+					"name": "Purchase a ticket for an event by user 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/purchase?username=amrita&quantity=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"purchase"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "amrita"
+								},
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase a ticket for an event by 2nd user Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/purchase?username=janedoe&quantity=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"purchase"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "janedoe"
+								},
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get events by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all events by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/search?name=Moana&page=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Moana"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/create?name=Pre Christmas Carols &description=Christmas Carols at Phoenix MarketCity&event_date=2024-12-25&total_tickets=22&available_tickets=22&ticket_price=30.56&created_by=admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"create"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Pre Christmas Carols "
+								},
+								{
+									"key": "description",
+									"value": "Christmas Carols at Phoenix MarketCity"
+								},
+								{
+									"key": "event_date",
+									"value": "2024-12-25"
+								},
+								{
+									"key": "total_tickets",
+									"value": "22"
+								},
+								{
+									"key": "available_tickets",
+									"value": "22"
+								},
+								{
+									"key": "ticket_price",
+									"value": "30.56"
+								},
+								{
+									"key": "created_by",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update event details",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventDate\": \"2024-12-09\",\n  \"status\" : \"PUBLISHED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reporting APIs",
+			"item": [
+				{
+					"name": "Get ticket details and stats for an event",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all sold tickets for an event",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/tickets?username=admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Purchase",
+			"item": [
+				{
+					"name": "Purchase a ticket for an event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/events/f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c/purchase?username=amrita&quantity=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c",
+								"purchase"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "amrita"
+								},
+								{
+									"key": "quantity",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create a new User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/create?name=John Doe&email=johndoe@gmail.com&username=johndoe&wallet=40000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"create"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "John Doe"
+								},
+								{
+									"key": "email",
+									"value": "johndoe@gmail.com"
+								},
+								{
+									"key": "username",
+									"value": "johndoe"
+								},
+								{
+									"key": "wallet",
+									"value": "40000"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
