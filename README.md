@@ -17,3 +17,13 @@ docker-compose -f docker-compose.yml up -d
 ```
 3. The application will be running on `http://localhost:8080`
 
+
+## API Documentation
+The API documentation is available at 
+
+### API Usage
+1. Create an event
+```shell
+curl --request POST 'http://localhost:8080/events/create?name=Pre%20Christmas%20Carols&description=Christmas%20Carols%20at%20Phoenix%20MarketCity&event_start_date=2024-12-26&event_end_date=2024-12-28&total_tickets=23&available_tickets=23&ticket_price=30.56&created_by=AD001'```
+```
+

@@ -18,7 +18,7 @@ import java.util.UUID
 class EventsService(
     private var eventsRepository: EventsRepository,
 ) {
-    fun getAllEvents(): List<Events>  {
+    fun getAllEvents(): List<Events> {
         val result = eventsRepository.findAll().map { it.toEvents() }
         return result
     }

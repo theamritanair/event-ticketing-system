@@ -26,7 +26,7 @@ class EventsController(
     private val ticketService: TicketService,
     private val logger: Logger = LoggerFactory.getLogger(EventsController::class.java),
 ) : EventsAPI {
-    override fun getAllEvents(): HttpResponse<List<Events>>  {
+    override fun getAllEvents(): HttpResponse<List<Events>> {
         val events = eventsService.getAllEvents()
         logger.info("Total events found: ${events.size}")
         return HttpResponse.ok(events)
@@ -106,14 +106,18 @@ class EventsController(
         @QueryValue(value = "username") username: String,
         @QueryValue(value = "quantity") quantity: Int,
     ): HttpResponse<*> {
-        logger.info("Received request to purchase ticket for event: $eventId by user: $username")
+        // TODO: Add input validation
+
+        logger.info(
+            "Received request to purchase ticket for event: $eventId by user: $username" +
+                " for quantity: $quantity",
+        )
         try {
             val result = ticketService.purchaseTicket(eventId, username, quantity)
-            if (result.isSuccess)
-                {
-                    logger.info("Ticket purchased successfully!")
-                    return HttpResponse.ok(result.getOrNull())
-                } else {
+            if (result.isSuccess) {
+                logger.info("Ticket purchased successfully!")
+                return HttpResponse.ok(result.getOrNull())
+            } else {
                 logger.error("Error purchasing ticket: ${result.exceptionOrNull()?.message}")
                 return HttpResponse.serverError("Error purchasing ticket.")
             }
