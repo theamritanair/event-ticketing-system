@@ -39,6 +39,8 @@ The API definition is available at `api-spec/events-api-v1.yml`.
 2. Add support for seat allocation
 3. Add payment gateway integration or ability to add funds to the wallet
 4. Add tests (functional and integration) for the application. Couldn't add tests due to time constraints.
+5. Refine API design, API definitions and error handling.
+
 
 ## Design Decisions
 

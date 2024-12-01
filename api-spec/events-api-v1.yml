@@ -198,6 +198,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: event_date
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "201":
           description: Event created
