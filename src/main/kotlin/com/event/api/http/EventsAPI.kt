@@ -92,6 +92,7 @@ interface EventsAPI {
         eventId: UUID,
         @QueryValue("username") username: String,
         @QueryValue("quantity") quantity: Int,
+        @QueryValue("event_date") eventDate: String,
     ): HttpResponse<*>
 
     @Operation(

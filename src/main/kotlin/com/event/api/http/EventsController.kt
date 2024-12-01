@@ -132,10 +132,11 @@ class EventsController(
         eventId: UUID,
         @QueryValue(value = "username") username: String,
         @QueryValue(value = "quantity") quantity: Int,
+        @QueryValue(value = "event_date") eventDate: String,
     ): HttpResponse<*> {
         logger.info("Validating purchase ticket request for event: $eventId by user: $username")
         // Pre validations
-        val validationResponse = Helper.validatePurchaseTicketRequest(quantity)
+        val validationResponse = Helper.validatePurchaseTicketRequest(quantity, eventDate)
         if (validationResponse != null) {
             logger.error("Error in purchase ticket request: $validationResponse")
             return HttpResponse.badRequest(validationResponse)
@@ -149,7 +150,7 @@ class EventsController(
                 " for quantity: $quantity",
         )
         try {
-            val result = ticketService.purchaseTicket(eventId, username, quantity)
+            val result = ticketService.purchaseTicket(eventId, eventDate, username, quantity)
             if (result.isSuccess) {
                 logger.info("Ticket purchased successfully!")
                 return HttpResponse.ok(result.getOrNull())

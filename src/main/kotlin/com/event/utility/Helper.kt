@@ -25,9 +25,15 @@ object Helper {
         return null
     }
 
-    fun validatePurchaseTicketRequest(quantity: Int): String? {
+    fun validatePurchaseTicketRequest(
+        quantity: Int,
+        eventDate: String,
+    ): String? {
         if (quantity <= 0 || quantity >= 5) {
             return INVALID_TICKETS_ERROR
+        }
+        if (!validateEventDate(eventDate)) {
+            return INVALID_DATE_FORMAT_ERROR
         }
         return null
     }

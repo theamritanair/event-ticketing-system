@@ -20,5 +20,10 @@ interface EventsRepository : JpaRepository<EventsEntity, UUID> {
         eventDate: LocalDate,
     ): Boolean
 
+    fun existsByIdAndEventDate(
+        id: UUID,
+        eventDate: LocalDate,
+    ): Boolean
+
     fun findByEventDate(eventDate: LocalDate): EventsEntity?
 }

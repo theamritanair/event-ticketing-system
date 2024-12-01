@@ -18,6 +18,7 @@ import jakarta.inject.Singleton
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -31,23 +32,33 @@ open class TicketService(
     @Transactional
     open fun purchaseTicket(
         eventId: UUID,
+        eventDate: String,
         username: String,
         quantity: Int,
     ): Result<Ticket> {
         val eventExists =
-            eventsRepository.existsById(eventId)
+            eventsRepository.existsByIdAndEventDate(eventId, LocalDate.parse(eventDate))
 
         if (!eventExists) {
-            throw EventNotFoundException("Event not found for id $eventId")
+            throw EventNotFoundException("Event not found for id $eventId and date $eventDate")
         }
         val user = userRepository.findByUsernameIgnoreCase(username) ?: throw UserNotFoundException("User not found for id $username")
 
-        val event = entityManager.find(EventsEntity::class.java, eventId)
-        // Lock the event to handle race conditions
-        entityManager.lock(event, jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+        val query =
+            entityManager.createQuery(
+                "SELECT e FROM EventsEntity e WHERE e.id = :eventId AND e.eventDate = :eventDate",
+                EventsEntity::class.java,
+            )
+        query.setParameter("eventId", eventId)
+        query.setParameter("eventDate", LocalDate.parse(eventDate))
+        query.setLockMode(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+        val event = query.singleResult
 
         if (event.availableTickets <= 0 || event.status == EventStatus.SOLD_OUT.name) {
             throw TicketSoldOutException("Tickets are sold out for event $eventId")
+        }
+        if (event.availableTickets < quantity) {
+            throw TicketSoldOutException("$quantity tickets are not available for event $eventId")
         }
         if (user.walletBalance < event.ticketPrice) {
             throw InsufficientWalletBalance("Insufficient balance")
