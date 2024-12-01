@@ -60,7 +60,6 @@ interface EventsAPI {
         @QueryValue("created_by") createdBy: String,
     ): HttpResponse<*>
 
-    // Update event
     @Operation(
         summary = "Update an event",
         description = "Update an event",
@@ -72,6 +71,15 @@ interface EventsAPI {
         eventId: UUID,
         @Body updateEventRequest: UpdateEventRequest,
     ): HttpResponse<*>
+
+    @Operation(
+        summary = "Delete an event",
+        description = "Delete an event",
+        tags = ["events"],
+    )
+    @ApiResponse(responseCode = "200", description = "Event deleted")
+    @Post(value = "/events/{eventId}/delete", produces = ["application/json"])
+    fun deleteEvent(eventId: UUID): HttpResponse<*>
 
     @Operation(
         summary = "Create an event",

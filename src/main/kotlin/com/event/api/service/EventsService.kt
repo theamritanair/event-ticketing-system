@@ -109,4 +109,13 @@ class EventsService(
 
         return Result.success(eventsRepository.update(event).toEvents())
     }
+
+    fun deleteEvent(eventId: UUID): Result<Boolean> {
+        val event =
+            eventsRepository.findById(eventId).orElseThrow {
+                EventNotFoundException("Event not found for id $eventId")
+            }
+        eventsRepository.delete(event)
+        return Result.success(true)
+    }
 }

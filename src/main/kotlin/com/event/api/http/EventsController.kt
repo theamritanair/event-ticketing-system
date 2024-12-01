@@ -2,6 +2,8 @@ package com.event.api.http
 
 import com.event.api.service.EventsService
 import com.event.api.service.TicketService
+import com.event.api.service.UserService
+import com.event.application.constants.Constants.UNAUTHORIZED_USER_ERROR
 import com.event.application.domain.Events
 import com.event.application.domain.EventsStats
 import com.event.application.domain.UpdateEventRequest
@@ -24,6 +26,7 @@ import java.util.UUID
 class EventsController(
     private val eventsService: EventsService,
     private val ticketService: TicketService,
+    private val userService: UserService,
     private val logger: Logger = LoggerFactory.getLogger(EventsController::class.java),
 ) : EventsAPI {
     override fun getAllEvents(): HttpResponse<List<Events>> {
@@ -68,11 +71,14 @@ class EventsController(
                 totalTickets,
                 availableTickets,
                 ticketPrice,
-                createdBy,
             )
         if (validationResponse != null) {
             logger.error("Error in create event request: $validationResponse")
             return HttpResponse.badRequest(validationResponse)
+        }
+        if (!userService.isUserAdmin(createdBy)) {
+            logger.error("Unauthorized user: $createdBy")
+            return HttpResponse.badRequest(UNAUTHORIZED_USER_ERROR)
         }
 
         if (eventsService.isDuplicateEvent(name, eventDate)) {
@@ -111,12 +117,30 @@ class EventsController(
         }
     }
 
+    override fun deleteEvent(eventId: UUID): HttpResponse<*> {
+        logger.info("Received request to delete event: $eventId")
+        val result = eventsService.deleteEvent(eventId)
+        return if (result.isSuccess) {
+            HttpResponse.ok(result.getOrNull())
+        } else {
+            HttpResponse.serverError("Error deleting event.")
+        }
+    }
+
     override fun purchaseTicket(
         eventId: UUID,
         @QueryValue(value = "username") username: String,
         @QueryValue(value = "quantity") quantity: Int,
     ): HttpResponse<*> {
-        // TODO: Add input validation
+        // Pre validations
+        val validationResponse = Helper.validatePurchaseTicketRequest(quantity)
+        if (validationResponse != null) {
+            logger.error("Error in purchase ticket request: $validationResponse")
+            return HttpResponse.badRequest(validationResponse)
+        }
+        if (!userService.getUserExists(username)) {
+            return HttpResponse.badRequest("No user found with the username: $username")
+        }
 
         logger.info(
             "Received request to purchase ticket for event: $eventId by user: $username" +
