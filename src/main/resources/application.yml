@@ -36,9 +36,3 @@ flyway:
       locations: classpath:db/migration
       schemas: events_db
       clean-schema: true
-
-swagger:
-  ui:
-    path: /swagger-ui  # You can change the Swagger UI path here
-    # Enable or disable Swagger UI (true to enable, false to disable)
-    enabled: true

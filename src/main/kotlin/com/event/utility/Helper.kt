@@ -32,7 +32,7 @@ object Helper {
         return null
     }
 
-    fun validateEventDate(date: String): Boolean {
+    private fun validateEventDate(date: String): Boolean {
         return try {
             LocalDate.parse(date)
             true
