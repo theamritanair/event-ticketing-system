@@ -3,6 +3,7 @@ package com.event.api.service
 import com.event.application.domain.EventStatus
 import com.event.application.domain.Events
 import com.event.application.domain.EventsStats
+import com.event.application.domain.UpdateEventRequest
 import com.event.application.exception.EventNotFoundException
 import com.event.datasource.mapper.toEvents
 import com.event.datasource.mapper.toEventsEntity
@@ -89,8 +90,23 @@ class EventsService(
         }
     }
 
-    fun getEventsByDate(date: String): Events {
-        val event = eventsRepository.findByEventDate(LocalDate.parse(date))?.toEvents()
-        return event ?: throw EventNotFoundException("Event not found for date $date")
+    fun updateEvent(
+        eventId: UUID,
+        updateRequest: UpdateEventRequest,
+    ): Result<Events> {
+        val event =
+            eventsRepository.findById(eventId).orElseThrow {
+                EventNotFoundException("Event not found for id $eventId")
+            }
+
+        updateRequest.name?.let { event.title = it }
+        updateRequest.description?.let { event.description = it }
+        updateRequest.eventDate?.let { event.eventDate = LocalDate.parse(it) }
+        updateRequest.totalTickets?.let { event.totalTickets = it }
+        updateRequest.availableTickets?.let { event.availableTickets = it }
+        updateRequest.ticketPrice?.let { event.ticketPrice = it }
+        updateRequest.status?.let { event.status = it }
+
+        return Result.success(eventsRepository.update(event).toEvents())
     }
 }

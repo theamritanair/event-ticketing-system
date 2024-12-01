@@ -1,7 +1,9 @@
 package com.event.api.http
 
 import com.event.application.domain.Events
+import com.event.application.domain.UpdateEventRequest
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.QueryValue
@@ -56,6 +58,19 @@ interface EventsAPI {
         @QueryValue("available_tickets") availableTickets: Int,
         @QueryValue("ticket_price") ticketPrice: BigDecimal,
         @QueryValue("created_by") createdBy: String,
+    ): HttpResponse<*>
+
+    // Update event
+    @Operation(
+        summary = "Update an event",
+        description = "Update an event",
+        tags = ["events"],
+    )
+    @ApiResponse(responseCode = "200", description = "Event updated")
+    @Post(value = "/events/{eventId}/update", produces = ["application/json"])
+    fun updateEvent(
+        eventId: UUID,
+        @Body updateEventRequest: UpdateEventRequest,
     ): HttpResponse<*>
 
     @Operation(

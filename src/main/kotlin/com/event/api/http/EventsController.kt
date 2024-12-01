@@ -4,6 +4,7 @@ import com.event.api.service.EventsService
 import com.event.api.service.TicketService
 import com.event.application.domain.Events
 import com.event.application.domain.EventsStats
+import com.event.application.domain.UpdateEventRequest
 import com.event.application.exception.EventNotFoundException
 import com.event.application.exception.InsufficientWalletBalance
 import com.event.application.exception.TicketSoldOutException
@@ -41,6 +42,7 @@ class EventsController(
             HttpResponse.notFound()
         }
     }
+
     override fun getEventsByName(
         name: String,
         page: Int,
@@ -93,6 +95,19 @@ class EventsController(
         } else {
             logger.error("Error creating event: ${result.exceptionOrNull()?.message}")
             HttpResponse.serverError("Error creating event.")
+        }
+    }
+
+    override fun updateEvent(
+        eventId: UUID,
+        updateEventRequest: UpdateEventRequest,
+    ): HttpResponse<*> {
+        logger.info("Received request to update event: $eventId")
+        val result = eventsService.updateEvent(eventId, updateEventRequest)
+        return if (result.isSuccess) {
+            HttpResponse.ok(result.getOrNull())
+        } else {
+            HttpResponse.serverError("Error updating event.")
         }
     }
 
