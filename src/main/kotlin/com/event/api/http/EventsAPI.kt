@@ -82,8 +82,8 @@ interface EventsAPI {
     fun deleteEvent(eventId: UUID): HttpResponse<*>
 
     @Operation(
-        summary = "Create an event",
-        description = "Create an event",
+        summary = "Purchase a ticket",
+        description = "Purchase a ticket for an event by providing the event id, username and quantity",
         tags = ["events"],
     )
     @ApiResponse(responseCode = "201", description = "Event created")
