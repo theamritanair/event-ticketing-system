@@ -1,10 +1,8 @@
 package com.event.utility
 
-import com.event.application.constants.Constants.ADMIN_USERS
 import com.event.application.constants.Constants.INVALID_DATE_FORMAT_ERROR
 import com.event.application.constants.Constants.INVALID_TICKETS_ERROR
 import com.event.application.constants.Constants.INVALID_TICKET_PRICE_ERROR
-import com.event.application.constants.Constants.UNAUTHORIZED_USER_ERROR
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -14,11 +12,7 @@ object Helper {
         totalTickets: Int,
         availableTickets: Int,
         ticketPrice: BigDecimal,
-        createdBy: String,
     ): String? {
-        if (!ADMIN_USERS.contains(createdBy)) {
-            return UNAUTHORIZED_USER_ERROR
-        }
         if (availableTickets > totalTickets) {
             return INVALID_TICKETS_ERROR
         }
@@ -32,7 +26,7 @@ object Helper {
     }
 
     fun validatePurchaseTicketRequest(quantity: Int): String? {
-        if (quantity <= 0) {
+        if (quantity <= 0 || quantity >= 5) {
             return INVALID_TICKETS_ERROR
         }
         return null

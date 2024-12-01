@@ -1,12 +1,12 @@
 package com.event.api.service
 
-import com.event.application.constants.Constants.ADMIN_USERS
 import com.event.application.constants.Constants.UNAUTHORIZED_USER_ERROR
 import com.event.application.domain.EventStatus
 import com.event.application.domain.Ticket
 import com.event.application.exception.EventNotFoundException
 import com.event.application.exception.InsufficientWalletBalance
 import com.event.application.exception.TicketSoldOutException
+import com.event.application.exception.UnauthorizedUserException
 import com.event.application.exception.UserNotFoundException
 import com.event.datasource.entity.EventsEntity
 import com.event.datasource.mapper.toTicket
@@ -83,8 +83,8 @@ open class TicketService(
         eventId: UUID,
         username: String,
     ): List<Ticket> {
-        if (!ADMIN_USERS.contains(username)) {
-            throw UserNotFoundException(UNAUTHORIZED_USER_ERROR)
+        if (userRepository.findByUsernameIgnoreCase(username)?.role != "ADMIN") {
+            throw UnauthorizedUserException(UNAUTHORIZED_USER_ERROR)
         }
         val eventExists =
             eventsRepository.existsById(eventId)

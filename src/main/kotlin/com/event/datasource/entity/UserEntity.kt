@@ -25,4 +25,6 @@ class UserEntity(
     var createdAt: LocalDate,
     @Column(name = "wallet", nullable = false)
     var walletBalance: BigDecimal,
+    @Column(name = "role", nullable = false)
+    var role: String,
 )

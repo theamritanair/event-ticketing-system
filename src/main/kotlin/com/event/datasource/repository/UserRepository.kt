@@ -6,5 +6,6 @@ import io.micronaut.data.repository.CrudRepository
 
 @Repository
 interface UserRepository : CrudRepository<UserEntity, String> {
+    fun existsByUsername(username: String): Boolean
     fun findByUsernameIgnoreCase(username: String): UserEntity?
 }

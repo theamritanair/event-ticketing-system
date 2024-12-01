@@ -7,3 +7,5 @@ class TicketSoldOutException(s: String) : Exception(s)
 class UserNotFoundException(s: String) : Exception(s)
 
 class InsufficientWalletBalance(s: String) : Exception(s)
+
+class UnauthorizedUserException(s: String) : Exception(s)
