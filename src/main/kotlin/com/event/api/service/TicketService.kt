@@ -1,5 +1,7 @@
 package com.event.api.service
 
+import com.event.application.constants.Constants.ADMIN_USERS
+import com.event.application.constants.Constants.UNAUTHORIZED_USER_ERROR
 import com.event.application.domain.EventStatus
 import com.event.application.domain.Ticket
 import com.event.application.exception.EventNotFoundException
@@ -77,7 +79,19 @@ open class TicketService(
         return Result.success(ticket)
     }
 
-    fun getTicketsByEventId(eventId: UUID): List<Ticket> {
+    fun getTicketsByEventId(
+        eventId: UUID,
+        username: String,
+    ): List<Ticket> {
+        if (!ADMIN_USERS.contains(username)) {
+            throw UserNotFoundException(UNAUTHORIZED_USER_ERROR)
+        }
+        val eventExists =
+            eventsRepository.existsById(eventId)
+
+        if (!eventExists) {
+            throw EventNotFoundException("Event not found for id $eventId")
+        }
         val tickets = ticketRepository.findByEventId(eventId)
         return tickets.map { it.toTicket() }
     }

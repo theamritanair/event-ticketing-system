@@ -12,8 +12,7 @@ CREATE TABLE IF NOT EXISTS events_db.events(
     id uuid NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NULL,
-    event_start_date DATE NOT NULL,
-    event_end_date DATE NOT NULL,
+    event_date DATE NOT NULL,
     total_tickets INT NOT NULL CHECK (total_tickets > 0),
     available_tickets INT NOT NULL CHECK (available_tickets >= 0),
     ticket_price DECIMAL(10, 2) NOT NULL CHECK (ticket_price >= 0),
@@ -44,12 +43,11 @@ INSERT INTO events_db.users(id, name, email,username, created_at, wallet) VALUES
 INSERT INTO events_db.users(id, name, email, username, created_at, wallet) VALUES ('U0011', 'Jane', 'janedoe@hotmail.com', 'janedoe', '2021-01-01', 500.00);
 INSERT INTO events_db.users(id, name, email, username, created_at, wallet) VALUES ('AD001', 'Admin', 'admin@hotmail.com','admin', '2021-01-01', 50.00);
 
-INSERT INTO events_db.events(id, title, description, event_start_date, event_end_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
-VALUES ('f7b3b8b3-1b3b-4b3b-8b3b-4b4b4b3b3b3c', 'Moana', 'The original Moana movie', '2024-12-01', '2024-12-11', 150, 100, 400.00, 'AD001', '2023-01-01 16:00:00', '2024-11-01 17:00:00', 'PUBLISHED');
+INSERT INTO events_db.events(id, title, description, event_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
+VALUES ('f7b3b8b3-1b3b-4b3b-8b3b-4b4b4b3b3b3c', 'Moana', 'The original Moana movie', '2024-12-01', 150, 100, 400.00, 'AD001', '2023-01-01 16:00:00', '2024-11-01 17:00:00', 'PUBLISHED');
 
-INSERT INTO events_db.events(id, title, description, event_start_date, event_end_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
-VALUES ('f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c', 'Diljit Dosanjh - Dilluminati Tour', '', '2024-12-02', '2024-12-04', 1000, 900, 2000.00, 'AD001', '2023-01-01 16:00:00', '2024-11-04 16:00:00', 'PUBLISHED');
-
-INSERT INTO events_db.events(id, title, description, event_start_date, event_end_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
-VALUES ('f7c3b8b3-1b2b-4b4b-8b6b-4b7b4b7b3b3c', 'Moana - 2', 'The sequel of Moana movie', '2026-12-01', '2026-12-05', 150, 100, 510.00, 'AD001', '2023-01-01 16:00:00', '2023-01-01 16:00:00', 'PUBLISHED');
+INSERT INTO events_db.events(id, title, description, event_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
+VALUES ('f7b3b3b3-1b1b-4b3b-8b3b-3b3b3b3b3b3c', 'Diljit Dosanjh - Dilluminati Tour', '', '2024-12-02', 1000, 900, 2000.00, 'AD001', '2023-01-01 16:00:00', '2024-11-04 16:00:00', 'PUBLISHED');
+INSERT INTO events_db.events(id, title, description, event_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
+VALUES ('f7c3b8b3-1b2b-4b4b-8b6b-4b7b4b7b3b3c', 'Moana - 2', 'The sequel of Moana movie', '2026-12-01', 150, 100, 510.00, 'AD001', '2023-01-01 16:00:00', '2023-01-01 16:00:00', 'PUBLISHED');
 

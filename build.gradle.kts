@@ -4,8 +4,6 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.25-1.0.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.4.4"
-    id("io.micronaut.test-resources") version "4.4.4"
-    id("io.micronaut.aot") version "4.4.4"
     kotlin("plugin.jpa") version "1.9.25"
     id("com.diffplug.spotless") version "6.25.0"
 }
@@ -14,6 +12,8 @@ version = "0.1"
 group = "com.event"
 
 val kotlinVersion = project.properties.get("kotlinVersion")
+val micronautVersion = project.properties.get("micronautVersion")
+val kotestVersion = project.properties.get("kotestVersion")
 repositories {
     mavenCentral()
 }
@@ -44,10 +44,21 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.yaml:snakeyaml:2.0")
 
+    implementation("io.micronaut.data:micronaut-data-processor")
+    implementation("io.micronaut.data:micronaut-data-jpa")
+    implementation("jakarta.persistence:jakarta.persistence-api")
+
     // OpenAPI
     ksp("io.micronaut.openapi:micronaut-openapi-annotations")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
+
+    annotationProcessor("io.micronaut:micronaut-inject-java:$micronautVersion")
+    ksp("io.micronaut:micronaut-aop:$micronautVersion")
+
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.mockk:mockk:1.12.0")
 }
 
 application {
@@ -65,18 +76,6 @@ micronaut {
         incremental(true)
         annotations("com.event.*")
     }
-    aot {
-        // Please review carefully the optimizations enabled below
-        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
-        optimizeServiceLoading = false
-        convertYamlToJava = false
-        precomputeOperations = true
-        cacheEnvironment = true
-        optimizeClassLoading = true
-        deduceEnvironment = true
-        optimizeNetty = true
-        replaceLogbackXml = true
-    }
 }
 
 spotless {
@@ -92,4 +91,8 @@ spotless {
         removeUnusedImports()
         formatAnnotations()
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
