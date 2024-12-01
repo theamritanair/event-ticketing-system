@@ -20,7 +20,7 @@ docker-compose -f docker-compose.yml up -d
 3. The application will be running on `http://localhost:8080`
 
 ## API Documentation
-The API definition is available at folder `api-spec` in the root of the project.
+The API definition is available at `api-spec/events-api-v1.yml`.
 
 
 ## Assumptions made
@@ -31,6 +31,7 @@ The API definition is available at folder `api-spec` in the root of the project.
 4. There is no user authentication, actions are restricted based on the role of the user.
 5. A new user is created as a regular user. The user can be promoted to an admin by updating the user role in the database.
 6. A user can book max 5 tickets at a time.
+7. There is only one admin user in the system. The admin user is created by default when the application is started.
 
 
 ### Wishlist
@@ -50,6 +51,10 @@ The API definition is available at folder `api-spec` in the root of the project.
 ### ERD Diagram
 <img src="api-spec/erdimage.png" alt="ERD Diagram" width="500"/>
 
+### Postman Collection
+The postman collection is available at `Event Ticketing System.postman_collection.json`.
 
+This collection has the API requests that can be used to test the application.
+It also includes the request to test the concurrency handling for ticket purchase. To test that please run the `Concurrent Ticket Purchase` folder using the Postman Runner.
 
 

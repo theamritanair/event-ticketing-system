@@ -1,0 +1,406 @@
+openapi: 3.0.1
+info:
+  title: Event Ticketing System
+  description: This is a simple event ticketing system API that allows creating events, managing ticket inventory, and ticket purchases.
+  version: "1.0"
+paths:
+  /events:
+    get:
+      tags:
+        - events
+      summary: Get all events
+      operationId: getAllEvents
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Events"
+  /events/{id}:
+    get:
+      tags:
+        - events
+      summary: Get event by id
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Events"
+        "404":
+          description: Event not found
+  /events/search:
+    get:
+      tags:
+        - events
+      summary: Get event by name
+      description: Get event by their name. Returns a list of events which have the
+        same name or similar name
+      operationId: getEventsByName
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Events"
+  /events/create:
+    post:
+      tags:
+        - events
+      summary: Create an event
+      description: Create an event
+      operationId: createEvent
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: event_date
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: total_tickets
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: available_tickets
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: ticket_price
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: created_by
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Event created
+        "200":
+          description: createEvent 200 response
+          content:
+            application/json:
+              schema:
+                type: object
+  /events/{eventId}/update:
+    post:
+      tags:
+        - events
+      summary: Update an event
+      description: Update an event
+      operationId: updateEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventRequest"
+        required: true
+      responses:
+        "200":
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                type: object
+  /events/{eventId}/delete:
+    post:
+      tags:
+        - events
+      summary: Delete an event
+      description: Delete an event
+      operationId: deleteEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Event deleted
+          content:
+            application/json:
+              schema:
+                type: object
+  /events/{eventId}/purchase:
+    post:
+      tags:
+        - events
+      summary: Purchase a ticket
+      description: "Purchase a ticket for an event by providing the event id, username\
+        \ and quantity"
+      operationId: purchaseTicket
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: quantity
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "201":
+          description: Event created
+        "200":
+          description: purchaseTicket 200 response
+          content:
+            application/json:
+              schema:
+                type: object
+  /events/{eventId}/stats:
+    get:
+      tags:
+        - events
+      summary: Get event stats
+      description: Get event stats
+      operationId: getEventsStats
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventsStats"
+  /events/{eventId}/tickets:
+    get:
+      tags:
+        - events
+      summary: Get all tickets for an event
+      description: Get all tickets for an event
+      operationId: getTicketsByEventId
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+  /users/create:
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      description: Create a new user
+      operationId: createUser
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: wallet
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        "201":
+          description: User created
+        "200":
+          description: createUser 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+components:
+  schemas:
+    Events:
+      required:
+        - availableTickets
+        - createdBy
+        - eventDate
+        - id
+        - status
+        - ticketPrice
+        - title
+        - totalTickets
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        eventDate:
+          type: string
+          format: date
+        eventEndDate:
+          type: string
+          format: date
+          nullable: true
+        totalTickets:
+          type: integer
+          format: int32
+        availableTickets:
+          type: integer
+          format: int32
+        ticketPrice:
+          type: number
+        createdBy:
+          type: string
+        status:
+          type: string
+    EventsStats:
+      required:
+        - availableTickets
+        - eventId
+        - eventName
+        - status
+        - ticketsRevenue
+        - ticketsSold
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        eventName:
+          type: string
+        availableTickets:
+          type: integer
+          format: int32
+        ticketsSold:
+          type: integer
+          format: int32
+        ticketsRevenue:
+          type: number
+        status:
+          type: string
+    UpdateEventRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        eventDate:
+          type: string
+          nullable: true
+        totalTickets:
+          type: integer
+          format: int32
+          nullable: true
+        availableTickets:
+          type: integer
+          format: int32
+          nullable: true
+        ticketPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+          nullable: true
+    User:
+      required:
+        - email
+        - name
+        - role
+        - username
+        - walletBalance
+      type: object
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        walletBalance:
+          type: number
+        role:
+          type: string
+x-api-definition:
+  api_framework: Micronaut Kotlin
