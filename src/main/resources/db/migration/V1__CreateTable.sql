@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS events_db;
 CREATE TABLE IF NOT EXISTS events_db.users(
-    id varchar(5) NOT NULL,
+    id int8 NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     username VARCHAR(25) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS events_db.events(
 CREATE TABLE IF NOT EXISTS events_db.tickets(
     transaction_id uuid NOT NULL,
     event_id uuid NOT NULL,
-    user_id varchar(5) NOT NULL,
+    user_id int8 NOT NULL,
     purchase_date_time TIMESTAMP NOT NULL,
     quantity INT NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS events_db.tickets(
 
 
 
-INSERT INTO events_db.users(id, name, email,username, created_at, wallet, role) VALUES ('U0012', 'Amrita', 'amrita@gmail.com', 'amrita','2021-01-01', 10000.00, 'USER');
-INSERT INTO events_db.users(id, name, email, username, created_at, wallet, role) VALUES ('U0011', 'Jane', 'janedoe@hotmail.com', 'janedoe', '2021-01-01', 5000.00, 'USER');
-INSERT INTO events_db.users(id, name, email, username, created_at, wallet, role) VALUES ('AD001', 'Admin 1', 'admin@hotmail.com','admin', '2021-01-01', 500.00, 'ADMIN');
+INSERT INTO events_db.users(name, email,username, created_at, wallet, role) VALUES ('Amrita', 'amrita@gmail.com', 'amrita','2021-01-01', 10000.00, 'USER');
+INSERT INTO events_db.users(name, email, username, created_at, wallet, role) VALUES ('Jane', 'janedoe@hotmail.com', 'janedoe', '2021-01-01', 5000.00, 'USER');
+INSERT INTO events_db.users(name, email, username, created_at, wallet, role) VALUES ('Admin 1', 'admin@hotmail.com','admin', '2021-01-01', 500.00, 'ADMIN');
 
 INSERT INTO events_db.events(id, title, description, event_date, total_tickets, available_tickets, ticket_price, created_by, created_at, updated_at, status)
 VALUES ('f7b3b8b3-1b3b-4b3b-8b3b-4b4b4b3b3b3c', 'Moana', 'The original Moana movie', '2024-12-01', 150, 100, 400.00, 'AD001', '2023-01-01 16:00:00', '2024-11-01 17:00:00', 'PUBLISHED');
